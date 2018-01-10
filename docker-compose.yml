@@ -1,0 +1,31 @@
+################################################################################
+##
+##  Purpose: Provide a Beer application with several microservices
+##  Email: phriscage@gmail.com
+##
+################################################################################
+version: "3.4"
+services:
+  catalog-api:
+    image: phriscage/beer-catalog-api:${TAG}
+    ports:
+      - 8000:8000
+    environment:
+      - SQLALCHEMY_DATABASE_URI=mysql://root:root@catalog-db/data
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+  catalog-db:
+    image: mysql:5.7.20
+    environment:
+      - SERVICE_IGNORE=yes
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ${PWD}/files:/docker-entrypoint-initdb.d/.
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 256m

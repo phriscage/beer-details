@@ -1,0 +1,18 @@
+################################################################################
+##
+##  Purpose: Provide an catalog for Beer data
+##  Email: phriscage@gmail.com
+##
+################################################################################
+version: "3.4"
+services:
+  catalog-api:
+    build:
+      context: catalog
+      dockerfile: Dockerfile
+    image: phriscage/beer-catalog-api:${TAG}
+  #orders:
+    #build:
+      #context: orders
+      #dockerfile: orders/Dockerfile
+    #image: phriscage/beer-orders:${TAG}
