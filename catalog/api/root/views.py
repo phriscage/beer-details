@@ -10,6 +10,7 @@ from http import HTTPStatus
 import logging
 # from urllib.parse import urlparse, unquote
 from flask import Blueprint, jsonify, request, abort
+from sqlalchemy.exc import OperationalError
 
 sys.path.insert(0, os.path.dirname(
     os.path.realpath(__file__)) + '/../../')
@@ -60,6 +61,34 @@ def test():
     """
     return sample_response()
 
+@root.route('/health', methods=['GET'])
+def health():
+    """
+    **Example request:**
+
+    .. sourcecode:: http
+
+    GET HTTP/1.1
+    Accept: */*
+
+    **Example response:**
+
+    .. sourcecode:: http
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+
+    :statuscode 200: Ok
+    :statuscode 500: server error
+    """
+    try:
+        db_session.execute('SELECT 1 as is_alive;')
+    except Exception as error:
+        logger.critical(error)
+        abort(500)
+    return jsonify(message="All is well!", **http_status_response('OK')
+                  ), HTTPStatus.OK.value
+
 @root.route('/', methods=['GET', 'POST'])
 def index():
     """
@@ -86,9 +115,13 @@ def index():
         except TypeError as error:
             logger.warning(error)
             abort(400)
-        db_session.add(beer)
-        db_session.commit()
-        logger.debug(beer)
+        try:
+            db_session.add(beer)
+            db_session.commit()
+            logger.debug(beer)
+        except OperationalError as error:
+            logger.critical(error)
+            abort(500)
         return jsonify(data=beer.to_json, **http_status_response('CREATED')
                       ), HTTPStatus.CREATED.value
     limit = request.args.get('limit', 10)
@@ -116,7 +149,11 @@ def get_catalog(beer_id):
     :statuscode 200: Ok
     :statuscode 500: server error
     """
-    beer = Beer.query.filter_by(id=beer_id).first()
+    try:
+        beer = Beer.query.filter_by(id=beer_id).first()
+    except OperationalError as error:
+        logger.critical(error)
+        abort(500)
     if not beer:
         abort(404)
     return jsonify(data=beer.to_json, **http_status_response('OK')
