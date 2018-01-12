@@ -54,8 +54,12 @@ def create_app():
             app.errorhandler(error)(default_error_handle)
 
     # add each api Blueprint and create the base route
-    from root.views import root
-    app.register_blueprint(root, url_prefix="")
+    #from root.views import root
+    #app.register_blueprint(root, url_prefix="")
+    from health.views import health
+    app.register_blueprint(health, url_prefix="/health")
+    from details.views import details
+    app.register_blueprint(details, url_prefix="/details")
     return app
 
 

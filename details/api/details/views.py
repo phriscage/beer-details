@@ -17,79 +17,13 @@ sys.path.insert(0, os.path.dirname(
 
 from lib.database import db_session
 from lib.beer.models import Beer
-from lib.utils import http_status_response, get_fqdn, get_ip_address # noqa
+from lib.utils import http_status_response # noqak
 
 logger = logging.getLogger(__name__)
-root = Blueprint('main', __name__)
+details = Blueprint('details', __name__)
 
 
-def sample_response(extra_data=None):
-    """ sample response that is used for all resources """
-    # logger.debug(request.headers.environ)
-    data = {
-        'host': {
-            'fqdn': get_fqdn(),
-            'ip_address': get_ip_address()
-        },
-        'extra_data': extra_data,
-        'request': {
-            'url': request.url
-        }
-    }
-    return jsonify(data=data, **http_status_response('OK')
-                  ), HTTPStatus.OK.value
-
-@root.route('/test', methods=['GET'])
-def test():
-    """
-    **Example request:**
-
-    .. sourcecode:: http
-
-    GET HTTP/1.1
-    Accept: */*
-
-    **Example response:**
-
-    .. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Content-Type: application/json
-
-    :statuscode 200: Ok
-    :statuscode 500: server error
-    """
-    return sample_response()
-
-@root.route('/health', methods=['GET'])
-def health():
-    """
-    **Example request:**
-
-    .. sourcecode:: http
-
-    GET HTTP/1.1
-    Accept: */*
-
-    **Example response:**
-
-    .. sourcecode:: http
-
-    HTTP/1.1 200 OK
-    Content-Type: application/json
-
-    :statuscode 200: Ok
-    :statuscode 500: server error
-    """
-    try:
-        db_session.execute('SELECT 1 as is_alive;')
-    except Exception as error:
-        logger.critical(error)
-        abort(500)
-    return jsonify(message="All is well!", **http_status_response('OK')
-                  ), HTTPStatus.OK.value
-
-@root.route('/', methods=['GET', 'POST'])
+@details.route('/', methods=['GET', 'POST'])
 def index():
     """
     **Example request:**
@@ -129,8 +63,8 @@ def index():
     return jsonify(data=beers, **http_status_response('OK')
                   ), HTTPStatus.OK.value
 
-@root.route('/<int:beer_id>', methods=['GET'])
-def get_catalog(beer_id):
+@details.route('/<int:beer_id>', methods=['GET'])
+def get_beer(beer_id):
     """
     **Example request:**
 

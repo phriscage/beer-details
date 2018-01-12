@@ -1,13 +1,13 @@
 ################################################################################
 ##
-##  Purpose: Provide an catalog for Beer data
+##  Purpose: Provide a api for Beer data
 ##  Email: phriscage@gmail.com
 ##
 ################################################################################
 version: "3.4"
 services:
-  catalog-api:
-    image: phriscage/beer-catalog-api:${TAG}
+  details-api:
+    image: phriscage/beer-details-api:${TAG}
     ports:
       - 8000:8000
     volumes:
@@ -15,7 +15,7 @@ services:
     #working_dir: ${PWD}
     entrypoint: 
       - python 
-      - ${PWD}/catalog/api/main.py
+      - ${PWD}/details/api/main.py
   #orders:
     #build:
       #context: orders
