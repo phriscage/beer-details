@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 details = Blueprint('details', __name__)
 
 
-@details.route('/', methods=['GET', 'POST'])
+@details.route('', methods=['GET', 'POST'])
 def index():
     """
     **Example request:**
