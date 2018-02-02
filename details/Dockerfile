@@ -5,7 +5,6 @@
 ##  Email:  phriscage@gmail.com
 ##  Purpose:   This Dockerfile contains an example process
 ################################################################################
-
 # Using official python runtime base apline image
 FROM python:3.6-alpine
 
@@ -13,7 +12,7 @@ FROM python:3.6-alpine
 MAINTAINER Chris Page <phriscage@gmail.com>
 
 # Set the application directory
-WORKDIR app
+WORKDIR /app
 
 # Copy the requirements
 ADD requirements.txt /app/requirements.txt
@@ -37,13 +36,14 @@ RUN apk --no-cache add --virtual build-dependencies \
         mariadb-dev && \
       rm -rf /var/cache/apk/*
 
+## required after building 
 RUN apk -q --no-cache add mariadb-client-libs
 
 # Explicitly copy our files from the current folder to /app inside the container
 ADD api /app/api 
 ADD lib /app/lib 
 
-EXPOSE 8000
+EXPOSE 8080
 
 # Define our command to be run when launching the container
 ENTRYPOINT ["python", "/app/api/main.py"]

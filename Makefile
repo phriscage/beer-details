@@ -8,7 +8,7 @@ build:
 
 dev_build:
 	echo "Development Building TAG=${TAG}...";
-	TAG=${TAG}; docker-compose -f docker-compose.build.yml -f docker-compose.dev.yml build;
+	TAG=${TAG}; docker-compose -f docker-compose.dev.yml build;
 
 dev: dev_build
 	echo "Running TAG=${TAG}...";

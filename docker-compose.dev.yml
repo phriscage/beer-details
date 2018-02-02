@@ -7,17 +7,16 @@
 version: "3.4"
 services:
   details-api:
+    build:
+      context: details
+      #dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     image: phriscage/beer-details-api:${TAG}
     ports:
-      - 8000:8000
+      - 8080:8080
     volumes:
       - ${PWD}:${PWD}
     #working_dir: ${PWD}
     entrypoint: 
       - python 
       - ${PWD}/details/api/main.py
-  #orders:
-    #build:
-      #context: orders
-      #dockerfile: orders/Dockerfile
-    #image: phriscage/beer-orders:${TAG}

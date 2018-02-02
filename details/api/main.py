@@ -79,6 +79,6 @@ if __name__ == "__main__":
     parser.add_argument("--host", help="Hostname or IP address", dest="host",
                         type=str, default='0.0.0.0')
     parser.add_argument("--port", help="Port number", dest="port", type=int,
-                        default=8000)
+                        default=8080)
     args = parser.parse_args()
     bootstrap(**args.__dict__)
