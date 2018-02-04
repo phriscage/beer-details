@@ -87,6 +87,7 @@ def index():
     """
     try:
         db_session.execute('SELECT 1 as is_alive;')
+        db_session.close()
     except OperationalError as error:
         logger.critical(error)
         abort(500)
