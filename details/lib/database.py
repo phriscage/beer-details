@@ -9,7 +9,9 @@ from sqlalchemy.ext.declarative import declarative_base as real_declarative_base
 import datetime
 import simplejson as json
 
-engine = create_engine(os.getenv('SQLALCHEMY_DATABASE_URI'), convert_unicode=True)
+engine = create_engine(os.getenv('SQLALCHEMY_DATABASE_URI'),
+                       convert_unicode=True,
+                       pool_recycle=7200)
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
