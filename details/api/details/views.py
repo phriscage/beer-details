@@ -10,7 +10,7 @@ from http import HTTPStatus
 import logging
 # from urllib.parse import urlparse, unquote
 from flask import Blueprint, jsonify, request, abort
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, DataError
 
 sys.path.insert(0, os.path.dirname(
     os.path.realpath(__file__)) + '/../../')
@@ -53,7 +53,7 @@ def index():
             db_session.add(beer)
             db_session.commit()
             logger.debug(beer)
-        except OperationalError as error:
+        except (OperationalError, DataError) as error:
             logger.critical(error)
             abort(500)
         return jsonify(data=beer.to_json, **http_status_response('CREATED')

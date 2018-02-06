@@ -45,7 +45,7 @@ def create_app():
 
     def default_error_handle(error=None):
         """ create a default json error handle """
-        return jsonify(errors=[str(error)], message=error.description,
+        return jsonify(message=error.name, description=error.description,
                        success=False), error.code
 
     # handle all errors with json output
