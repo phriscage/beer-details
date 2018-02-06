@@ -22,6 +22,7 @@ from lib.utils import http_status_response # noqak
 logger = logging.getLogger(__name__)
 details = Blueprint('details', __name__)
 
+MAX_LIMIT=100
 
 @details.route('', methods=['GET', 'POST'])
 def index():
@@ -58,8 +59,20 @@ def index():
             abort(500)
         return jsonify(data=beer.to_json, **http_status_response('CREATED')
                       ), HTTPStatus.CREATED.value
-    limit = request.args.get('limit', 10)
-    beers = [beer.to_json for beer in Beer.query.order_by(Beer.updated_at.desc()).limit(limit)]
+    limit = int(request.args.get('limit', 10))
+    if limit > MAX_LIMIT:
+        limit = MAX_LIMIT
+    filter_args = ('name', 'brewery')
+    filter_query = str()
+    for name in filter_args:
+        if request.args.get(name, None):
+            filter_name = name
+            filter_query = "%%%s%%" % request.args.get(name)
+    if filter_query:
+        query = Beer.query.filter(getattr(Beer, filter_name).like(filter_query))
+    else:
+        query = Beer.query
+    beers = [beer.to_json for beer in query.order_by(Beer.updated_at.desc()).limit(limit)]
     return jsonify(data=beers, **http_status_response('OK')
                   ), HTTPStatus.OK.value
 
