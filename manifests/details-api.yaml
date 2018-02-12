@@ -15,7 +15,7 @@ spec:
         app: details-api
     spec:
       containers:
-        - image: gcr.io/chrispage-dev/beer-details-api:0.1.1
+        - image: gcr.io/chrispage-dev/beer-details-api:0.3.0
           name: details-api
           env:
           - name: SQLALCHEMY_DATABASE_URI

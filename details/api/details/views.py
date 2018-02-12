@@ -76,8 +76,8 @@ def index():
     return jsonify(data=beers, **http_status_response('OK')
                   ), HTTPStatus.OK.value
 
-@details.route('/<int:beer_id>', methods=['GET'])
-def get_beer(beer_id):
+@details.route('/<int:beer_id>', methods=['GET', 'DELETE'])
+def get_or_delete_beer(beer_id):
     """
     **Example request:**
 
@@ -103,5 +103,15 @@ def get_beer(beer_id):
         abort(500)
     if not beer:
         abort(404)
+    if request.method == 'DELETE':
+        try:
+            Beer.query.filter_by(id=beer_id).delete()
+            db_session.commit()
+            logger.debug("'%s' deleted." % beer_id)
+        except (OperationalError, DataError) as error:
+            logger.critical(error)
+            abort(500)
+        return jsonify(**http_status_response('OK')
+                      ), HTTPStatus.OK.value
     return jsonify(data=beer.to_json, **http_status_response('OK')
                   ), HTTPStatus.OK.value
