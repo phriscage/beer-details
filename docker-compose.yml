@@ -22,8 +22,8 @@ services:
     environment:
       - SERVICE_IGNORE=yes
       - MYSQL_ROOT_PASSWORD=root
-    volumes:
-      - ${PWD}/files:/docker-entrypoint-initdb.d/.
+    #volumes:
+      #- ${PWD}/files:/docker-entrypoint-initdb.d/.
     restart: always
     deploy:
       resources:

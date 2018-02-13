@@ -72,7 +72,11 @@ def index():
         query = Beer.query.filter(getattr(Beer, filter_name).like(filter_query))
     else:
         query = Beer.query
-    beers = [beer.to_json for beer in query.order_by(Beer.updated_at.desc()).limit(limit)]
+    try:
+        beers = [beer.to_json for beer in query.order_by(Beer.updated_at.desc()).limit(limit)]
+    except OperationalError as error:
+            logger.critical(error)
+            abort(500)
     return jsonify(data=beers, **http_status_response('OK')
                   ), HTTPStatus.OK.value
 
